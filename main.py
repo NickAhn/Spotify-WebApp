@@ -11,38 +11,60 @@ url = "https://accounts.spotify.com/api/token"
 headers = {}
 data = {}
 
-# Encode base 64
-message = f"{client_id}:{secret}"
-messageBytes = message.encode('ascii') #convert to bytes
-base64Bytes = base64.b64encode(messageBytes) #encode it into base64
-base64Message = base64Bytes.decode('ascii') #convert back to string
+# Create a GET request for the User Authorization
+def requestUserAuthorization():
+    AUTH_URL = 'https://accounts.spotify.com/authorize'
 
-headers['Authorization'] = f"Basic {base64Message}"
-data['grant_type'] = "client_credentials"
+    #make request to the /authorize endpoint
+    auth_code = requests.get(AUTH_URL, {
+        'client_id': client_id,
+        'response_type': 'code',
+        'redirect_uri': 'http://127.0.0.1:5500/index.html'
+        'scope': 'user-top-read'
+    })
+    print(auth_code)
 
-# POST request
-r = requests.post(url, headers=headers, data=data)
-token = r.json()['access_token']
+
+# OAuth to get access token to be used for the Spotify API
+def getAccessToken(clientID, secret):
+    # Encode base 64
+    message = f"{client_id}:{secret}"
+    messageBytes = message.encode('ascii') #convert to bytes
+    base64Bytes = base64.b64encode(messageBytes) #encode it into base64
+    base64Message = base64Bytes.decode('ascii') #convert back to string
+
+    headers['Authorization'] = f"Basic {base64Message}"
+    data['grant_type'] = "client_credentials"
+
+    # POST request
+    r = requests.post(url, headers=headers, data=data)
+    token = r.json()['access_token']
+
+    return token
 
 
+def getUserTopItems(acessToken):
+    endpoint = "https://api.spotify.com/v1/me/top/type"
 
-# get playlist
-playlistId = "28aaNsSVEfa0V3R6s5hXHp?si=0666e5bbf57a4eaa"
-playlistUrl = f"https://api.spotify.com/v1/playlists/{playlistId}"
-headers = {
-    "Authorization": "Bearer " + token
-}
 
-res = requests.get(url=playlistUrl, headers=headers)
-if res.status_code != 200:
-    print("Error: status code ", res.status_code)
-    sys.exit()
+    header = {
+        "Authorization": "Bearer " + token
+    }
 
-response_json = res.json()
-# response_json = json.dumps(res.json(), indent=2)
+    # GET request
+    response = requests.get(url=endpoint, headers=header)
+    if response.status_code != 200:
+        print("Error: status code ", response.status_code)
+        return
 
-for i in response_json["tracks"]["items"]:
-    print(i["track"]["name"])
+    topItems = response.json()
+    return topItems
+
+
+token = getAccessToken(client_id, secret)
+topItems = getUserTopItems(token)
+print(json.dumps(topItems), indent=2)
+
 
 
 
