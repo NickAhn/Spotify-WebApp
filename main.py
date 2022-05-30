@@ -1,71 +1,37 @@
+# Main Script: get User's Top Tracks within a time range
+# Time ranges:
+#  - short_term = calculated from several years of data and including all new data as it becomes available
+#  - medium_term = approx. last 6 months
+#  - long_term) = approx. last 4 weeks
+
+import requests
 import base64
 import json
-from urllib import response
-import requests
-import json
-from secrets import client_id, secret
-import sys
-
-# Step 1 - Authorization 
-url = "https://accounts.spotify.com/api/token"
-headers = {}
-data = {}
-
-# Create a GET request for the User Authorization
-def requestUserAuthorization():
-    AUTH_URL = 'https://accounts.spotify.com/authorize'
-
-    #make request to the /authorize endpoint
-    auth_code = requests.get(AUTH_URL, {
-        'client_id': client_id,
-        'response_type': 'code',
-        'redirect_uri': 'http://127.0.0.1:5500/index.html'
-        'scope': 'user-top-read'
-    })
-    print(auth_code)
+from secrets import refresh_token, client_id, secret, refresh_token
 
 
+# Refresh token previously received in authenticate.py
+def refreshAccessToken():
 # OAuth to get access token to be used for the Spotify API
-def getAccessToken(clientID, secret):
-    # Encode base 64
+    TOKEN_URL = 'https://accounts.spotify.com/api/token'
+
+    # Create HEADER by encoding message to 64 bit
     message = f"{client_id}:{secret}"
-    messageBytes = message.encode('ascii') #convert to bytes
-    base64Bytes = base64.b64encode(messageBytes) #encode it into base64
-    base64Message = base64Bytes.decode('ascii') #convert back to string
+    encodedData = base64.b64encode(bytes(message, "ISO-8859-1")).decode("ascii")
 
-    headers['Authorization'] = f"Basic {base64Message}"
-    data['grant_type'] = "client_credentials"
+    data = {
+        'grant_type': 'refresh_token',
+        'refresh_token': refresh_token
+    }
 
-    # POST request
-    r = requests.post(url, headers=headers, data=data)
+    header = {
+        'Authorization': f"Basic {encodedData}",
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+    r = requests.post(url=TOKEN_URL, data=data, headers=header)
     token = r.json()['access_token']
-
     return token
 
 
-def getUserTopItems(acessToken):
-    endpoint = "https://api.spotify.com/v1/me/top/type"
-
-
-    header = {
-        "Authorization": "Bearer " + token
-    }
-
-    # GET request
-    response = requests.get(url=endpoint, headers=header)
-    if response.status_code != 200:
-        print("Error: status code ", response.status_code)
-        return
-
-    topItems = response.json()
-    return topItems
-
-
-token = getAccessToken(client_id, secret)
-topItems = getUserTopItems(token)
-print(json.dumps(topItems), indent=2)
-
-
-
-
-
+token = refreshAccessToken()
