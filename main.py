@@ -57,6 +57,27 @@ def getUserTopItems(accessToken, time_range):
     topItems = response.json()
     return topItems
 
+def createPlaylist(token, user_id, playlist_name, is_public, description):
+    endpoint = f"https://api.spotify.com/v1/users/{user_id}/playlists"
+    header = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {token}"
+    }
+
+    request_body = {
+        "name":playlist_name,
+        "public":is_public,
+        "description": description
+    }
+
+    response = requests.post(url=endpoint, headers=header, data=json.dumps(request_body))
+    if response.status_code != 200:
+        print("Error: status code ", response.status_code)
+        return
+
+    json_data = response.json()
+    return json_data
+
 
 token = refreshAccessToken()
 topItems = getUserTopItems(token, "long_term")
@@ -64,5 +85,8 @@ print(type(topItems))
 print()
 for i in topItems['items']:
     print(i['name'])
+    print(i['id'], end="\n\n")
+
+createPlaylist(token, "31gdfhbyzslosy6wycwpllk5ab6q", "test", True, "Playlist created with Spotify API")
 # print(json.dumps(topItems, indent=2))
 
