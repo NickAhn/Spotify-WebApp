@@ -34,4 +34,35 @@ def refreshAccessToken():
     return token
 
 
+# GET request to get User's Top Items
+# Param: string:accessToken, str:time_range
+# returns a json object with User's Top Tracks
+def getUserTopItems(accessToken, time_range):
+    endpoint = f"https://api.spotify.com/v1/me/top/tracks"
+
+    header = {
+        "Authorization": "Bearer " + accessToken
+    }
+
+    queryParameters = {
+        'time_range': time_range
+    }
+
+    # GET request
+    response = requests.get(url=endpoint, headers=header, params=queryParameters)
+    if response.status_code != 200:
+        print("Error: status code ", response.status_code)
+        return
+
+    topItems = response.json()
+    return topItems
+
+
 token = refreshAccessToken()
+topItems = getUserTopItems(token, "long_term")
+print(type(topItems))
+print()
+for i in topItems['items']:
+    print(i['name'])
+# print(json.dumps(topItems, indent=2))
+
