@@ -1,12 +1,12 @@
-## Spotify Weekly Top Songs (WIP)
+# Spotify Weekly Top Songs (WIP)
 - Python Script to create a playlist with your *short-term* top songs using the Spotify API
 - Playlist created will be updated weekly
 
-## Description of files
-# main.py
+# Description of files
+## main.py
 main script of the project. Contains the code to read User's top songs
 
-# authenticate.py
+## authenticate.py
 script to make GET requests for user authorization and POST requests to receive Access Token and Refresh Token\
 obs: The *refresh()* function in main.py refreshes the Access Token after it expires
 
