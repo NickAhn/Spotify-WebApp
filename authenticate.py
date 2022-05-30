@@ -11,16 +11,18 @@ from secrets import client_id, secret, redirect_uri
 import sys
 import urllib.parse
 
+# Define scope of permissions (space separated)
+SCOPE = 'playlist-modify-public user-top-read'
 
 # Function to get User Authentication Code to be used in getAccessToken()
 # params: str:scope = space-separated list of permissions
 # return: Authorization Code
-def requestUser3(scope):
+def requestUserAuthorization():
     query_params = {
         'client_id': client_id,
         'response_type': 'code',
         'redirect_uri': redirect_uri,
-        'scope': scope
+        'scope': SCOPE
     }
     AUTH_URL = 'https://accounts.spotify.com/authorize?' + urllib.parse.urlencode(query_params)
     print(AUTH_URL)
@@ -31,37 +33,13 @@ def requestUser3(scope):
     return auth_code
     
     
-def requestUserAuthorization(scope):
-    AUTH_URL = 'https://accounts.spotify.com/authorize'
-
-    query = {
-        'client_id': client_id,
-        'response_type': 'code',
-        'redirect_uri': 'http://127.0.0.1:5500/index.html',
-        'scope': scope
-    }
-
-    #make request to the /authorize endpoint
-    # change the scope depending on what you want to do
-    r = requests.get(AUTH_URL, query)
-    print(r.text)
-    json_data = r.json()
-
-    print(json_data)
-    print(type(json_data))
-
-    auth_code = json_data['code']
-    print(" - Auth_code: ", auth_code)
-    return auth_code
-
-
 # OAuth to get access token to be used for the Spotify API
 # send a POST request to receive the Access Token to be used for the API
 # return: tuple with Access Token and Refresh Token
-def getAccessToken(scope):
+def getAccessToken():
     TOKEN_URL = 'https://accounts.spotify.com/api/token'
     # auth_code = requestUserAuthorization('user-top-read playlist-modify-public')
-    auth_code = requestUser3(scope)
+    auth_code = requestUserAuthorization()
 
     # Create HEADER by encoding message to 64 bit
     message = f"{client_id}:{secret}"
@@ -90,8 +68,7 @@ def getAccessToken(scope):
 
     return access_token, refresh_token
 
-scope = 'playlist-modify-public user-top-read'
-token = getAccessToken(scope)
+token = getAccessToken()
 
 
 
