@@ -4,6 +4,7 @@
 #  - medium_term = approx. last 6 months
 #  - long_term) = approx. last 4 weeks
 
+from re import A
 import requests
 import base64
 import json
@@ -57,6 +58,7 @@ def getUserTopItems(accessToken, time_range):
     topItems = response.json()
     return topItems
 
+
 def createPlaylist(token, user_id, playlist_name, is_public, description):
     endpoint = f"https://api.spotify.com/v1/users/{user_id}/playlists"
     header = {
@@ -79,14 +81,54 @@ def createPlaylist(token, user_id, playlist_name, is_public, description):
     return json_data
 
 
+# POST request to Add one or more items to a user's playlist
+# Params: string:token; string:playlist_id; list:tracks = list of track uri's
+# Return: a snapshot ID for the playlist
+def addSongsToPlaylist(token, playlist_id, tracks):
+    endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+
+    header = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {token}"
+    }
+
+    query = {
+        'uris':tracks
+    }
+
+    ## TODO: Fix Error parsing JSON
+    # request_body = {
+    #     'uris':json.dumps(tracks)
+    # }
+
+    response = requests.post(url=endpoint, headers=header, params=query)
+    print(response)
+
+    json_data = response.json()
+    print(type(json_data))
+    print(json_data)
+    return json_data
+ 
+    
+
+
+
 token = refreshAccessToken()
 topItems = getUserTopItems(token, "long_term")
-print(type(topItems))
-print()
-for i in topItems['items']:
-    print(i['name'])
-    print(i['id'], end="\n\n")
+# print(type(topItems))
 
-createPlaylist(token, "31gdfhbyzslosy6wycwpllk5ab6q", "test", True, "Playlist created with Spotify API")
+songs_uris = ''
+for i in topItems['items']:
+    # print(i['uri'])
+    # print(i['name'])
+    # print(i['id'], end="\n\n")
+    songs_uris += i['uri']
+    #TODO: find a more elegant way to do this
+    if(i != topItems['items'][-1]):
+        songs_uris += ","
+
+addSongsToPlaylist(token, "6C95koZYc4e8qG1Fnu2C25", songs_uris)
+
+# createPlaylist(token, "31gdfhbyzslosy6wycwpllk5ab6q", "test", True, "Playlist created with Spotify API")
 # print(json.dumps(topItems, indent=2))
 
