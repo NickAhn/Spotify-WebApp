@@ -46,7 +46,6 @@ class apiHandler():
     # GET request to get User's Top Items
     # Param: string:accessToken, str:time_range
     # returns a json object with User's Top Tracks
-    # TODO: test with new header
     def getUserTopItems(self, time_range):
         endpoint = f"https://api.spotify.com/v1/me/top/tracks"
 
@@ -81,7 +80,7 @@ class apiHandler():
 
     # POST request to Add one or more items to a user's playlist
     # Params: string:token; string:playlist_id; list:tracks = list of track uri's
-    # Return: a snapshot ID for the playlist
+    # Return: snapshot ID for the playlist
     def addSongToPlaylist(self, playlist_id, tracks):
         endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
 
@@ -102,6 +101,29 @@ class apiHandler():
         print(json_data)
         return json_data
 
+    # PUT request to clear playlist and add new songs
+    # Params: string:playlist_id, string:uri_list = comma separated list of uri's of the songs to be added
+    # Return: string:snapshot ID for the playlist
+    def updatePlaylist(self, playlist_id, uri_list):
+        endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+
+
+        query = {
+            'uris': uri_list
+        }
+        
+        #TODO: Fix error parsing JSON
+        # request_body = {
+        #     'uris': uri_list
+        # }
+
+        response = requests.put(url=endpoint, headers=self.header, params=query)
+        print(response)
+
+        json_data = response.json()
+        print(type(json_data))
+        print(json_data)
+        return json_data
 
 api = apiHandler(refreshAccessToken())
 topItems = api.getUserTopItems("short_term")
@@ -116,6 +138,8 @@ playlist_id = "6C95koZYc4e8qG1Fnu2C25"
 #     #TODO: find a more elegant way to do this
 #     if(i != topItems['items'][-1]):
 #         songs_uris += ","
+
+api.updatePlaylist(playlist_id, topItems['items'][0]['uri'])
 
 # addSongsToPlaylist(token, "6C95koZYc4e8qG1Fnu2C25", songs_uris)
 
