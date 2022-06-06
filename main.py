@@ -11,10 +11,12 @@ from re import A
 import requests
 import base64
 import json
-from secrets import refresh_token, client_id, secret, refresh_token
+from secrets import refresh_token, client_id, secret, refresh_token, jsonbin_masterkey
 
+# jsonbin database id
+BIN_ID = "629d746a05f31f68b3b7788f"
 
-# Refresh token previously received in authenticate.py
+# Refresh Spotify Authentication Token previously received in authenticate.py
 def refreshAccessToken():
 # OAuth to get access token to be used for the Spotify API
     TOKEN_URL = 'https://accounts.spotify.com/api/token'
@@ -38,6 +40,7 @@ def refreshAccessToken():
     return token
 
 
+# Class to handle all Spotify API's requests
 class apiHandler():
     def __init__(self, token) -> None:
         self.token = token
@@ -46,9 +49,10 @@ class apiHandler():
             "Authorization": "Bearer " + self.token
         }
 
-    # GET request to get User's Top Items
-    # Param: string:accessToken, str:time_range
-    # returns a json object with User's Top Tracks
+    # GET request to get User's Most Played Tracks info
+    # Param: 
+    # - str:time_range: can be short_term (past 4 weeks), medium_term (6 months), long_term (1 year)
+    # Return: dic:topItems
     def getUserTopItems(self, time_range):
         endpoint = f"https://api.spotify.com/v1/me/top/tracks"
 
@@ -66,6 +70,7 @@ class apiHandler():
         topItems = response.json()
         return topItems
 
+
     def createPlaylist(self, user_id, playlist_name, is_public=True, description=""):
         endpoint = f"https://api.spotify.com/v1/users/{user_id}/playlists"
         
@@ -81,9 +86,12 @@ class apiHandler():
         json_data = response.json()
         return json_data
 
+
     # POST request to Add one or more items to a user's playlist
-    # Params: string:token; string:playlist_id; list:tracks = list of track uri's
-    # Return: snapshot ID for the playlist
+    # Params: 
+    # - string:playlist_id
+    # - string:tracks = comma separated list of track uri's (TODO: change to a list type)
+    # Return: string:snapshot ID for the playlist
     def addSongToPlaylist(self, playlist_id, tracks):
         endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
 
@@ -104,8 +112,11 @@ class apiHandler():
         print(json_data)
         return json_data
 
+
     # PUT request to clear playlist and add new songs
-    # Params: string:playlist_id, string:uri_list = comma separated list of uri's of the songs to be added
+    # Params: 
+    # - string:playlist_id
+    # - string:uri_list = comma separated list of uri's of the songs to be added
     # Return: string:snapshot ID for the playlist
     def updatePlaylist(self, playlist_id, uri_list):
         endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
@@ -130,18 +141,20 @@ class apiHandler():
 
 
 # PUT request to update json bin in the jsonbin.io database
-# Params: - string:bin_id,
-#         dic:json_data
+# Params: 
+# - string:bin_id,
+# - dic:json_data
 # Return: 
 def writeDB(bin_id, json_data):
+    print(" - Writing DB - ")
     endpoint = f"https://api.jsonbin.io/v3/b/{bin_id}"
 
     headers = {
         'Content-Type': "application/json",
-        'X-Master-Key': MASTER-KEY
+        'X-Master-Key': jsonbin_masterkey
     }
 
-    response = requests.put(url="endpoint", headers=headers, json=json_data)
+    response = requests.put(url=endpoint, headers=headers, json=json_data)
     json_data = response.json()
     print(json_data)
     return json_data
@@ -151,6 +164,9 @@ def writeDB(bin_id, json_data):
 api = apiHandler(refreshAccessToken())
 topItems = api.getUserTopItems("short_term")
 playlist_id = "6C95koZYc4e8qG1Fnu2C25"
+
+test = writeDB("62a0f04905f31f68b3ba0439", topItems)
+print(test)
 
 # songs_uris = ''
 # for i in topItems['items']:
@@ -162,7 +178,7 @@ playlist_id = "6C95koZYc4e8qG1Fnu2C25"
 #     if(i != topItems['items'][-1]):
 #         songs_uris += ","
 
-api.updatePlaylist(playlist_id, topItems['items'][0]['uri'])
+# api.updatePlaylist(playlist_id, topItems['items'][0]['uri'])
 
 # addSongsToPlaylist(token, "6C95koZYc4e8qG1Fnu2C25", songs_uris)
 
