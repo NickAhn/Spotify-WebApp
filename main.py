@@ -4,6 +4,9 @@
 #  - medium_term = approx. last 6 months
 #  - long_term) = approx. last 4 weeks
 
+# jsonbin.io documentation: https://jsonbin.io/api-reference/bins/get-started
+
+from curses import KEY_A1
 from re import A
 import requests
 import base64
@@ -124,6 +127,26 @@ class apiHandler():
         print(type(json_data))
         print(json_data)
         return json_data
+
+
+# PUT request to update json bin in the jsonbin.io database
+# Params: - string:bin_id,
+#         dic:json_data
+# Return: 
+def writeDB(bin_id, json_data):
+    endpoint = f"https://api.jsonbin.io/v3/b/{bin_id}"
+
+    headers = {
+        'Content-Type': "application/json",
+        'X-Master-Key': MASTER-KEY
+    }
+
+    response = requests.put(url="endpoint", headers=headers, json=json_data)
+    json_data = response.json()
+    print(json_data)
+    return json_data
+
+
 
 api = apiHandler(refreshAccessToken())
 topItems = api.getUserTopItems("short_term")
