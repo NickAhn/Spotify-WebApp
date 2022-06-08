@@ -17,6 +17,7 @@ for track in topItems['items']:
     
 jsonbin_api.writeDB("62a0f04905f31f68b3ba0439", uris)
 
+
 # songs_uris = ''
 # for i in topItems['items']:
 #     print(i['uri'])
