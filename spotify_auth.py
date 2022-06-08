@@ -3,12 +3,9 @@
 
 import base64
 from textwrap import indent
-from urllib import response
 import webbrowser
 import requests
-import json
 from secrets import client_id, secret, redirect_uri
-import sys
 import urllib.parse
 
 # Define scope of permissions (space separated)
