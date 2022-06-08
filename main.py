@@ -165,12 +165,17 @@ api = apiHandler(refreshAccessToken())
 topItems = api.getUserTopItems("short_term")
 playlist_id = "6C95koZYc4e8qG1Fnu2C25"
 
-test = writeDB("62a0f04905f31f68b3ba0439", topItems)
+uris = {}
+
+for count, value in enumerate(topItems['items'], start=1):
+    uris[count] = value['name']
+
+test = writeDB("62a0f04905f31f68b3ba0439", uris)
 print(test)
 
 # songs_uris = ''
 # for i in topItems['items']:
-#     # print(i['uri'])
+#     print(i['uri'])
 #     # print(i['name'])
 #     # print(i['id'], end="\n\n")
 #     songs_uris += i['uri']
