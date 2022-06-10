@@ -7,15 +7,26 @@ import spotify_api
 import jsonbin_api
 
 
-api = spotify_api.apiHandler(spotify_api.refreshAccessToken())
-topItems = api.getUserTopItems("short_term")
-playlist_id = "6C95koZYc4e8qG1Fnu2C25"
-
-uris = {}
-for track in topItems['items']:
-    uris[track['name']] = track['uri']
+PLAYLIST_ID = "6C95koZYc4e8qG1Fnu2C25"
+SPOTIFY_API = spotify_api.apiHandler(spotify_api.refreshAccessToken())
     
-jsonbin_api.writeDB("62a0f04905f31f68b3ba0439", uris)
+
+def updateTopSongsDB():
+    topItems = SPOTIFY_API.getUserTopItems("short_term")
+
+    uris = {}
+    for track in topItems['items']:
+        uris[track['name']] = track['uri']
+
+    jsonbin_api.writeDB("62a0f04905f31f68b3ba0439", uris)
+
+    return uris
+
+# def updateTopSongsPlaylist():
+    # SPOTIFY_API.updatePlaylist()
+
+updateTopSongsDB()
+
 
 
 # songs_uris = ''

@@ -3,6 +3,10 @@
 from secrets import jsonbin_masterkey
 import requests
 
+HEADERS = {
+        'Content-Type': "application/json",
+        'X-Master-Key': jsonbin_masterkey
+    }
 
 # PUT request to update json bin in the jsonbin.io database
 # Params: 
@@ -13,15 +17,24 @@ def writeDB(bin_id, json_data):
     print(" - Writing DB - ")
     endpoint = f"https://api.jsonbin.io/v3/b/{bin_id}"
 
-    headers = {
-        'Content-Type': "application/json",
-        'X-Master-Key': jsonbin_masterkey
-    }
-
-    response = requests.put(url=endpoint, headers=headers, json=json_data)
+    response = requests.put(url=endpoint, headers=HEADERS, json=json_data)
     json_data = response.json()
     print(json_data)
     return json_data
+
+
+def createDB(bin_name, data):
+    print("- Creating JSON Bin", bin_name, " - ")
+    endpoint = "https://api.jsonbin.io/v3/b"
+    HEADERS["X-Bin-Name"] = bin_name
+
+    response = requests.post(url=endpoint, headers=HEADERS, json=data)
+    json_data = response.json()
+    return json_data
+
+
+json = {"sample":"test2"}
+createDB("test_bin", json)
 
 
 
