@@ -40,12 +40,18 @@ class api():
             "Authorization": "Bearer " + self.token
         }
 
+    def getCurrentUserProfile(self):
+        endpoint = "https://api.spotify.com/v1/me"
+
+        response = requests.get(url=endpoint, headers=self.header)
+        return response.json()
+
+
     # GET request to get User's Most Played Tracks info
     # Param: 
     # - str:time_range: can be short_term (past 4 weeks), medium_term (6 months), long_term (1 year)
     # Return: dic:topItems
     def getUserTopItems(self, time_range):
-        print(" - Getting User ", time_range, " Top Items - ")
         endpoint = f"https://api.spotify.com/v1/me/top/tracks"
 
         queryParameters = {
@@ -54,17 +60,11 @@ class api():
 
         # GET request
         response = requests.get(url=endpoint, headers=self.header, params=queryParameters)
-        if response.status_code != 200:
-            print("Error: status code ", response.status_code)
-            print(response)
-            return
-
         topItems = response.json()
         return topItems
 
 
     def createPlaylist(self, user_id, playlist_name, is_public=True, description=""):
-        print(" - Creating Playlist - ")
         endpoint = f"https://api.spotify.com/v1/users/{user_id}/playlists"
         
         request_body = {
@@ -86,7 +86,6 @@ class api():
     # - string:tracks = comma separated list of track uri's (TODO: change to a list type)
     # Return: string:snapshot ID for the playlist
     def addSongToPlaylist(self, playlist_id, tracks):
-        print(" - Adding Song to Playlist - ")
         endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
 
         query = {
@@ -102,8 +101,6 @@ class api():
         print(response)
 
         json_data = response.json()
-        print(type(json_data))
-        print(json_data)
         return json_data
 
 
@@ -113,7 +110,6 @@ class api():
     # - string:uri_list = comma separated list of uri's of the songs to be added
     # Return: string:snapshot ID for the playlist
     def updatePlaylist(self, playlist_id, uri_list):
-        print(" - Updating Playlsit ", playlist_id, " - ")
         endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
 
 
@@ -127,10 +123,7 @@ class api():
 
         # response = requests.put(url=endpoint, headers=self.header, params=query)
         response = requests.put(url=endpoint, headers=self.header, data=json.dumps(request_body))
-        print(response)
 
         json_data = response.json()
-        print(type(json_data))
-        print(json_data)
         return json_data
 

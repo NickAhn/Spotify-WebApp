@@ -7,8 +7,8 @@ import spotify_api
 import jsonbin_api
 
 
-PLAYLIST_ID = "6C95koZYc4e8qG1Fnu2C25"
-SPOTIFY_API = spotify_api.apiHandler(spotify_api.refreshAccessToken())
+PLAYLIST_ID = "6npTzd1QgVwlJ52QSbEXDJ"
+SPOTIFY_API = spotify_api.api(spotify_api.refreshAccessToken())
     
 
 def updateTopSongsDB():
@@ -22,27 +22,18 @@ def updateTopSongsDB():
 
     return uris
 
-# def updateTopSongsPlaylist():
-    # SPOTIFY_API.updatePlaylist()
 
-updateTopSongsDB()
+def updateTopSongs(playlist_id):
+    print("- Getting ", SPOTIFY_API.getCurrentUserProfile()['display_name'], "'s Top Items -")
+    topItems = SPOTIFY_API.getUserTopItems("short_term")
+    uri_list = []
+    for i in topItems['items']:
+        uri_list.append(i['uri'])
+    
+    print("- Updating Playlist -")
+    return SPOTIFY_API.updatePlaylist(playlist_id, uri_list)
 
 
-
-# songs_uris = ''
-# for i in topItems['items']:
-#     print(i['uri'])
-#     # print(i['name'])
-#     # print(i['id'], end="\n\n")
-#     songs_uris += i['uri']
-#     #TODO: find a more elegant way to do this
-#     if(i != topItems['items'][-1]):
-#         songs_uris += ","
-
-# api.updatePlaylist(playlist_id, topItems['items'][0]['uri'])
-
-# addSongsToPlaylist(token, "6C95koZYc4e8qG1Fnu2C25", songs_uris)
-
-# createPlaylist(token, "31gdfhbyzslosy6wycwpllk5ab6q", "test", True, "Playlist created with Spotify API")
-# print(json.dumps(topItems, indent=2))
+updateTopSongs(PLAYLIST_ID)
+print("Weekly Bops Updated Successfully!")
 

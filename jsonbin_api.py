@@ -33,8 +33,6 @@ def createDB(bin_name, data):
     return json_data
 
 
-json = {"sample":"test2"}
-createDB("test_bin", json)
 
 
 
