@@ -32,7 +32,7 @@ def refreshAccessToken():
 
 
 # Class to handle all Spotify API's requests
-class apiHandler():
+class api():
     def __init__(self, token) -> None:
         self.token = token
         self.header = {
@@ -121,17 +121,16 @@ class apiHandler():
             'uris': uri_list
         }
         
-        #TODO: Fix error parsing JSON
-        # request_body = {
-        #     'uris': uri_list
-        # }
+        request_body = {
+            'uris': uri_list
+        }
 
-        response = requests.put(url=endpoint, headers=self.header, params=query)
+        # response = requests.put(url=endpoint, headers=self.header, params=query)
+        response = requests.put(url=endpoint, headers=self.header, data=json.dumps(request_body))
         print(response)
 
         json_data = response.json()
         print(type(json_data))
         print(json_data)
         return json_data
-
 
