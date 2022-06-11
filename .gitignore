@@ -1,3 +1,4 @@
 secrets.py
 test.py
 db.txt
+*.json

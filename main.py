@@ -38,13 +38,16 @@ def updateTopSongs(playlist_id):
 
 
 def getTopSongsData(topItems_json):
-    data = {}
+    data = {
+        "playlist_id": PLAYLIST_ID,
+        "tracks":[]
+    }
     for count, i in enumerate(topItems_json['items'], start=1):
-        data[count] = {
+        data["tracks"].append({
             'name': i['name'],
             'artist': i['artists'][0]['name'],
             'uri':i['uri']
-        }
+        })
 
     return data
 
@@ -52,4 +55,7 @@ def getTopSongsData(topItems_json):
 
 data = updateTopSongs(PLAYLIST_ID)
 print("Weekly Bops Updated Successfully!")
+
+with open("nickahn.json", "w") as f:
+    f.write(json.dumps(data, indent=4))
 
