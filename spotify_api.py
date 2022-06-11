@@ -6,6 +6,8 @@ import base64
 import json
 from secrets import refresh_token, client_id, secret, refresh_token, jsonbin_masterkey
 
+# Boolean 
+TESTING = False
 
 # Refresh Spotify Authentication Token previously received in authenticate.py
 # - Must have refresh_token in secrets.py
@@ -127,3 +129,29 @@ class api():
         json_data = response.json()
         return json_data
 
+
+if TESTING:
+    api_test = api(refreshAccessToken())
+    topItems = api_test.getUserTopItems("short_term")
+
+    def gettinData():        
+        data = {}
+        for count, i in enumerate(topItems['items'], start=1):
+            data[count] = {
+                'name': i['name'],
+                'artist': i['artists'][0]['name'],
+                'uri':i['uri']
+            }
+
+        print(json.dumps(data, indent=2))
+    
+
+    #TODO: get genre by artist ID
+    '''
+        gather data to see genres of top 20 songs, then print most prominent genres
+    '''
+    def gettingTrackGenre():
+        for i in topItems['items']:
+            print(i['name'], i['type'], sep=" ")
+
+    # gettinData()

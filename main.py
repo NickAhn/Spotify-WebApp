@@ -5,6 +5,7 @@
 #  - long_term) = approx. last 4 weeks
 import spotify_api
 import jsonbin_api
+import json
 
 
 PLAYLIST_ID = "6npTzd1QgVwlJ52QSbEXDJ"
@@ -22,7 +23,7 @@ def updateTopSongsDB():
 
     return uris
 
-
+# Return: dictionary of ranking:{track name, artist, uri}
 def updateTopSongs(playlist_id):
     print("- Getting ", SPOTIFY_API.getCurrentUserProfile()['display_name'], "'s Top Items -")
     topItems = SPOTIFY_API.getUserTopItems("short_term")
@@ -31,9 +32,24 @@ def updateTopSongs(playlist_id):
         uri_list.append(i['uri'])
     
     print("- Updating Playlist -")
-    return SPOTIFY_API.updatePlaylist(playlist_id, uri_list)
+    SPOTIFY_API.updatePlaylist(playlist_id, uri_list)
+
+    return getTopSongsData(topItems)
 
 
-updateTopSongs(PLAYLIST_ID)
+def getTopSongsData(topItems_json):
+    data = {}
+    for count, i in enumerate(topItems_json['items'], start=1):
+        data[count] = {
+            'name': i['name'],
+            'artist': i['artists'][0]['name'],
+            'uri':i['uri']
+        }
+
+    return data
+
+
+
+data = updateTopSongs(PLAYLIST_ID)
 print("Weekly Bops Updated Successfully!")
 
