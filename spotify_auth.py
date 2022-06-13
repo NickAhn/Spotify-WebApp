@@ -5,12 +5,19 @@ import base64
 from textwrap import indent
 import webbrowser
 import requests
-from secret import client_id, secret, redirect_uri
+# from secret import client_id, secret, redirect_uri
 import urllib.parse
+import json
 
+with open('secrets.json') as json_file:
+    data = json.load(json_file)
 
 # Define scope of permissions (space separated)
-SCOPE = 'playlist-modify-public user-top-read'
+# SCOPE = 'playlist-modify-public user-top-read'
+client_id = data['client_id']
+secret = data['secret']
+redirect_uri = data['redirect_uri']
+SCOPE = data['scope']
 
 # Function to get User Authentication Code to be used in getAccessToken()
 # params: str:scope = space-separated list of permissions
