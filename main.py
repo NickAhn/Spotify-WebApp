@@ -49,15 +49,15 @@ def printTopSongs(data):
 
 
 # data = updateTopSongs(PLAYLIST_ID)
-top_songs_data_st= getTopSongsData(SPOTIFY_API.getUserTopItems("short_term"))
-# printTopSongs(top_songs_data_st)
-df = pd.DataFrame(top_songs_data_st['tracks'])
-df.index = df.index + 1
-print(df)
+# top_songs_data_st= getTopSongsData(SPOTIFY_API.getUserTopItems("short_term"))
+# # printTopSongs(top_songs_data_st)
+# df = pd.DataFrame(top_songs_data_st['tracks'])
+# df.index = df.index + 1
+# print(df)
 
-# print("Weekly Bops Updated Successfully!")
+# # print("Weekly Bops Updated Successfully!")
 
-with open("nickahn.json", "w") as f:
-    # f.write(json.dumps(df.to_json(), indent=4))
-    f.write(df.to_json(indent=4))
+# with open("nickahn.json", "w") as f:
+#     # f.write(json.dumps(df.to_json(), indent=4))
+#     f.write(df.to_json(indent=4))
 

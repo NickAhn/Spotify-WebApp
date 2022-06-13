@@ -5,8 +5,9 @@ import base64
 from textwrap import indent
 import webbrowser
 import requests
-from secrets import client_id, secret, redirect_uri
+from secret import client_id, secret, redirect_uri
 import urllib.parse
+
 
 # Define scope of permissions (space separated)
 SCOPE = 'playlist-modify-public user-top-read'
@@ -15,6 +16,7 @@ SCOPE = 'playlist-modify-public user-top-read'
 # params: str:scope = space-separated list of permissions
 # return: Authorization Code
 def requestUserAuthorization():
+    print("- Redirecting to AUTH_URL -")
     query_params = {
         'client_id': client_id,
         'response_type': 'code',
@@ -22,21 +24,22 @@ def requestUserAuthorization():
         'scope': SCOPE
     }
     AUTH_URL = 'https://accounts.spotify.com/authorize?' + urllib.parse.urlencode(query_params)
-    print(AUTH_URL)
-    webbrowser.open(AUTH_URL)
+    # print(AUTH_URL)
+    # webbrowser.open(AUTH_URL)
     
-    temp = input("Enter the url you were redirected to: ")
-    auth_code = temp.split("code=")[1]
-    return auth_code
+    # temp = input("Enter the url you were redirected to: ")
+    # auth_code = temp.split("code=")[1]
+    return AUTH_URL
     
     
 # OAuth to get access token to be used for the Spotify API
 # send a POST request to receive the Access Token to be used for the API
 # return: tuple with Access Token and Refresh Token
-def getAccessToken():
+def getAccessToken(auth_code):
+    print("- Getting Access Token -")
     TOKEN_URL = 'https://accounts.spotify.com/api/token'
     # auth_code = requestUserAuthorization('user-top-read playlist-modify-public')
-    auth_code = requestUserAuthorization()
+    # auth_code = requestUserAuthorization()
 
     # Create HEADER by encoding message to 64 bit
     message = f"{client_id}:{secret}"
@@ -65,7 +68,7 @@ def getAccessToken():
 
     return access_token, refresh_token
 
-token = getAccessToken()
+# token = getAccessToken()
 
 
 
