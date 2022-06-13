@@ -13,11 +13,10 @@ with open('secrets.json') as json_file:
     data = json.load(json_file)
 
 # Define scope of permissions (space separated)
-# SCOPE = 'playlist-modify-public user-top-read'
+SCOPE = 'playlist-modify-public user-top-read'
 client_id = data['client_id']
 secret = data['secret']
 redirect_uri = data['redirect_uri']
-SCOPE = data['scope']
 
 # Function to get User Authentication Code to be used in getAccessToken()
 # params: str:scope = space-separated list of permissions
