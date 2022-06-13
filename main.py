@@ -9,7 +9,7 @@ import pandas as pd
 
 
 PLAYLIST_ID = "6npTzd1QgVwlJ52QSbEXDJ"
-SPOTIFY_API = spotify_api.api(spotify_api.refreshAccessToken())
+# SPOTIFY_API = spotify_api.api(spotify_api.refreshAccessToken())
     
 
 # Return: dictionary of ranking:{track name, artist, uri}

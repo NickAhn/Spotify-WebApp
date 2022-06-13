@@ -8,36 +8,41 @@ from secret import client_id, secret, refresh_token
 
 # Refresh Spotify Authentication Token previously received in authenticate.py
 # - Must have refresh_token in secrets.py
-def refreshAccessToken():
-    TOKEN_URL = 'https://accounts.spotify.com/api/token'
-
-    # Create HEADER by encoding message to 64 bit
-    message = f"{client_id}:{secret}"
-    encodedData = base64.b64encode(bytes(message, "ISO-8859-1")).decode("ascii")
-
-    data = {
-        'grant_type': 'refresh_token',
-        'refresh_token': refresh_token
-    }
-
-    header = {
-        'Authorization': f"Basic {encodedData}",
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-
-    r = requests.post(url=TOKEN_URL, data=data, headers=header)
-    token = r.json()['access_token']
-    return token
 
 
 # Class to handle all Spotify API's requests
 class api():
-    def __init__(self, token) -> None:
-        self.token = token
+    def __init__(self) -> None:
+        secrets_data = json.load(open('secrets.json', 'r'))
+        self.token = secrets_data['access_token']
+        self.refresh_token = secrets_data['refresh_token']
         self.header = {
             "Content-Type": "application/json",
             "Authorization": "Bearer " + self.token
         }
+    
+    def refreshAccessToken(self):
+        print("- Refreshing Access Token -")
+        TOKEN_URL = 'https://accounts.spotify.com/api/token'
+
+        # Create HEADER by encoding message to 64 bit
+        message = f"{client_id}:{secret}"
+        encodedData = base64.b64encode(bytes(message, "ISO-8859-1")).decode("ascii")
+
+        data = {
+            'grant_type': 'refresh_token',
+            'refresh_token': self.refresh_token
+        }
+
+        header = {
+            'Authorization': f"Basic {encodedData}",
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+
+        r = requests.post(url=TOKEN_URL, data=data, headers=header)
+        token = r.json()['access_token']
+        return token
+
 
     def getCurrentUserProfile(self):
         endpoint = "https://api.spotify.com/v1/me"
