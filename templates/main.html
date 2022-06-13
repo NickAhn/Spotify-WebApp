@@ -19,12 +19,22 @@
 </head>
 <body>
 <h1>Spotify</h1>
+<p> test </p>
 
-{% for table in tables %}
-    {{titles[loop.index]}}
-    {{ table|safe }}
-{% endfor %}
-
+<table>
+  <tr>
+    {% for col in columns %}
+    <th>{{col}}</th>
+    {%endfor%}
+  </tr>
+  {% for row in rows %}
+  <tr>
+    {% for data in row %}
+    <td>{{data}}</td>
+    {%endfor%}
+  </tr>
+  {%endfor%}
+</table>
 
 
 <script

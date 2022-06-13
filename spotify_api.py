@@ -4,11 +4,8 @@ from re import A
 import requests
 import base64
 import json
-import secrets
+from secret import client_id, secret, refresh_token
 
-client_id = secrets.client_id
-secret = secrets.secret
-refresh_token = secrets.refresh_token
 
 # Refresh Spotify Authentication Token previously received in authenticate.py
 # - Must have refresh_token in secrets.py
