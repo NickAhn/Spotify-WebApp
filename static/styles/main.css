@@ -1,0 +1,42 @@
+:root {
+    --bg: #fff;
+    --black: #191414;
+    --darkgreen: #1db954;
+    --lightgreen: #1ed760;
+
+}
+
+body {
+    background-color: var(--bg);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+}
+
+h1 {
+    margin:0;
+    padding:0;
+}
+
+.header {
+    text-align: center;
+    margin: 1em;
+}
+
+a {
+    text-decoration: None;
+}
+
+button {
+    text-decoration: None;
+    background-color: var(--darkgreen);
+
+    color: var(--black);
+    border: 2px solid white;
+    border-radius: 20px;
+    font-size: 2em;
+    padding: 4px 30px;
+}
+
+button:hover {
+    background-color: var(--lightgreen);
+}

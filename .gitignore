@@ -2,3 +2,5 @@ secrets.py
 test.py
 db.txt
 *.json
+.venv/
+testing/
