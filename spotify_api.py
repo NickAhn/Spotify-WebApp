@@ -6,8 +6,6 @@ import base64
 import json
 from secrets import refresh_token, client_id, secret, refresh_token, jsonbin_masterkey
 
-# Boolean 
-TESTING = False
 
 # Refresh Spotify Authentication Token previously received in authenticate.py
 # - Must have refresh_token in secrets.py
@@ -129,7 +127,17 @@ class api():
         json_data = response.json()
         return json_data
 
+    def getAvailableGenreSeeds(self):
+        endpoint = "https://api.spotify.com/v1/recommendations/available-genre-seeds"
 
+        response = requests.put(url=endpoint, headers=self.header)
+        print(response)
+        json_data = response.json()
+        return json_data
+
+
+
+TESTING = False
 if TESTING:
     api_test = api(refreshAccessToken())
     topItems = api_test.getUserTopItems("short_term")
@@ -144,6 +152,9 @@ if TESTING:
             }
 
         print(json.dumps(data, indent=2))
+
+    test = api_test.getAvailableGenreSeeds()
+    print(type(test))
     
 
     #TODO: get genre by artist ID
