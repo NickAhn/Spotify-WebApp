@@ -9,21 +9,36 @@
 body {
     background-color: var(--bg);
     font-family: 'Montserrat', sans-serif;
-    font-weight: 900;
 }
 
-h1 {
+img {
+    max-width: 100%;
+    display: block;
+}
+
+h1, h2, h3, p{
     margin:0;
     padding:0;
 }
 
+p {
+    text-align: center;
+}
+
 .header {
     text-align: center;
-    margin: 1em;
+    /* margin: 1em; */
+    font-weight: 400;
+    font-size: 3em;
 }
 
 a {
     text-decoration: None;
+}
+
+.container {
+    display: grid;
+    /* grid-template-columns: 1fr 3fr; */
 }
 
 button {
@@ -40,3 +55,19 @@ button {
 button:hover {
     background-color: var(--lightgreen);
 }
+
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+.item {
+    margin: 1em;
+}
+

@@ -15,11 +15,11 @@
       href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
       crossorigin="anonymous"
     />
+    <link rel= "stylesheet" href= "{{ url_for('static', filename='styles/main.css') }}">
     <title>Nickel's Spotify Project!</title>
 </head>
 <body>
-<h1>Spotify</h1>
-<p> {{user}}</p>
+<h1 class="header">Hello, {{user}}!</h1>
 
 <!-- <table>
   <tr>

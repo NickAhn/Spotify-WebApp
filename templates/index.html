@@ -11,7 +11,23 @@
     <title>Nickel's Spotify Project!</title>
 </head>
 <body>
-    <h1 class="header">Main Page</h1>
-    <a href="{{ url_for('main') }}"><button>Start</button></a>
+    <div class="column">
+        <div class="item">
+            <h1 class="header">NickelBox</h1>
+        </div>
+        <div class="item">
+            <div class="container">
+                <p>Discover your Most Played Songs, Artists, and Genres!</p>
+                <br>
+                <p>WebApp created by Nicolas Ahn</p>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="center">
+        <a href="{{ url_for('auth') }}"><button>Start</button></a>
+    </div>
 </body>
 </html>
