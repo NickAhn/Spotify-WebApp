@@ -16,7 +16,7 @@ with open('secrets.json') as json_file:
 SCOPE = 'playlist-modify-public user-top-read'
 client_id = data['client_id']
 secret = data['secret']
-redirect_uri = data['redirect_uri']
+redirect_uri = "http://127.0.0.1:5000/callback/"
 
 # Function to get User Authentication Code to be used in getAccessToken()
 # params: str:scope = space-separated list of permissions
@@ -30,33 +30,25 @@ def requestUserAuthorization():
         'scope': SCOPE
     }
     AUTH_URL = 'https://accounts.spotify.com/authorize?' + urllib.parse.urlencode(query_params)
-    # print(AUTH_URL)
-    # webbrowser.open(AUTH_URL)
-    
-    # temp = input("Enter the url you were redirected to: ")
-    # auth_code = temp.split("code=")[1]
+
     return AUTH_URL
     
     
 # OAuth to get access token to be used for the Spotify API
 # send a POST request to receive the Access Token to be used for the API
-# return: tuple with Access Token and Refresh Token
-def getAccessToken(auth_code):
+# return: Header to be used for API requests
+def getAccessHeader(auth_code):
     print("- Getting Access Token -")
     TOKEN_URL = 'https://accounts.spotify.com/api/token'
-    # auth_code = requestUserAuthorization('user-top-read playlist-modify-public')
-    # auth_code = requestUserAuthorization()
 
     # Create HEADER by encoding message to 64 bit
     message = f"{client_id}:{secret}"
     encodedData = base64.b64encode(bytes(message, "ISO-8859-1")).decode("ascii")
 
-
     headers = {
         'Authorization': f"Basic {encodedData}",
         'Content-Type': "application/x-www-form-urlencoded"
     }
-
 
     payload = {
         'grant_type': "authorization_code",
@@ -69,12 +61,10 @@ def getAccessToken(auth_code):
     r_json = r.json()
     print(r_json)
     access_token, refresh_token = r_json['access_token'], r_json['refresh_token']
-    print("\nAccess Token: ", access_token)
-    print("\nRefresh Token: ", refresh_token)
 
-    return access_token, refresh_token
+    auth_header = {"Authorization": "Bearer {}".format(access_token)}
+    return auth_header
 
-# token = getAccessToken()
 
 
 
