@@ -11,133 +11,148 @@ from secret import client_id, secret, refresh_token
 
 
 # Class to handle all Spotify API's requests
-class api():
-    def __init__(self) -> None:
-        secrets_data = json.load(open('secrets.json', 'r'))
-        self.token = secrets_data['access_token']
-        self.refresh_token = secrets_data['refresh_token']
-        self.header = {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer " + self.token
-        }
+# class api():
+#     def __init__(self) -> None:
+#         secrets_data = json.load(open('secrets.json', 'r'))
+#         self.token = secrets_data['access_token']
+#         self.refresh_token = secrets_data['refresh_token']
+#         self.header = {
+#             "Content-Type": "application/json",
+#             "Authorization": "Bearer " + self.token
+#         }
+
+HEADER = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer "
+
+}
+
     
-    def refreshAccessToken(self):
-        print("- Refreshing Access Token -")
-        TOKEN_URL = 'https://accounts.spotify.com/api/token'
+def refreshAccessToken(self):
+    print("- Refreshing Access Token -")
+    TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
-        # Create HEADER by encoding message to 64 bit
-        message = f"{client_id}:{secret}"
-        encodedData = base64.b64encode(bytes(message, "ISO-8859-1")).decode("ascii")
+    # Create HEADER by encoding message to 64 bit
+    message = f"{client_id}:{secret}"
+    encodedData = base64.b64encode(bytes(message, "ISO-8859-1")).decode("ascii")
 
-        data = {
-            'grant_type': 'refresh_token',
-            'refresh_token': self.refresh_token
-        }
+    data = {
+        'grant_type': 'refresh_token',
+        'refresh_token': self.refresh_token
+    }
 
-        header = {
-            'Authorization': f"Basic {encodedData}",
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
+    header = {
+        'Authorization': f"Basic {encodedData}",
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
 
-        r = requests.post(url=TOKEN_URL, data=data, headers=header)
-        token = r.json()['access_token']
-        return token
-
-
-    def getCurrentUserProfile(self):
-        endpoint = "https://api.spotify.com/v1/me"
-
-        response = requests.get(url=endpoint, headers=self.header)
-        return response.json()
+    r = requests.post(url=TOKEN_URL, data=data, headers=header)
+    token = r.json()['access_token']
+    return token
 
 
-    # GET request to get User's Most Played Tracks info
-    # Param: 
-    # - str:time_range: can be short_term (past 4 weeks), medium_term (6 months), long_term (1 year)
-    # Return: dic:topItems
-    def getUserTopItems(self, time_range):
-        endpoint = f"https://api.spotify.com/v1/me/top/tracks"
+def checkStatusCode(self, response):
+    print(response)
+    if response.status_code == 401:
+        self.token = self.refreshAccessToken()
+    
 
-        queryParameters = {
-            'time_range': time_range
-        }
+def getCurrentUserProfile(auth_header):
+    print("- Getting Current User Profile -")
+    endpoint = "https://api.spotify.com/v1/me"
 
-        # GET request
-        response = requests.get(url=endpoint, headers=self.header, params=queryParameters)
-        topItems = response.json()
-        return topItems
+    response = requests.get(url=endpoint, headers=auth_header)
+    print(response.json()['images'][0]['url'])
+    return response.json()
 
+#--
+# GET request to get User's Most Played Tracks info
+# Param: 
+# - str:time_range: can be short_term (past 4 weeks), medium_term (6 months), long_term (1 year)
+# Return: dic:topItems
+def getUserTopItems(auth_header, time_range):
+    endpoint = f"https://api.spotify.com/v1/me/top/tracks"
 
-    def createPlaylist(self, user_id, playlist_name, is_public=True, description=""):
-        endpoint = f"https://api.spotify.com/v1/users/{user_id}/playlists"
-        
-        request_body = {
-            "name":playlist_name,
-            "public":is_public,
-            "description": description
-        }
+    queryParameters = {
+        'time_range': time_range
+    }
 
-        response = requests.post(url=endpoint, headers=self.header, data=json.dumps(request_body))
-        #TODO: add error handling (try/catch?)
+    # GET request
+    response = requests.get(url=endpoint, headers=auth_header, params=queryParameters)
+    topItems = response.json()
+    return topItems
 
-        json_data = response.json()
-        return json_data
+#--
 
+def createPlaylist(auth_header, user_id, playlist_name, is_public=True, description=""):
+    endpoint = f"https://api.spotify.com/v1/users/{user_id}/playlists"
+    
+    request_body = {
+        "name":playlist_name,
+        "public":is_public,
+        "description": description
+    }
 
-    # POST request to Add one or more items to a user's playlist
-    # Params: 
-    # - string:playlist_id
-    # - string:tracks = comma separated list of track uri's (TODO: change to a list type)
-    # Return: string:snapshot ID for the playlist
-    def addSongToPlaylist(self, playlist_id, tracks):
-        endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+    response = requests.post(url=endpoint, headers=auth_header, data=json.dumps(request_body))
+    #TODO: add error handling (try/catch?)
 
-        query = {
-            'uris':tracks
-        }
-
-        ## TODO: Fix Error parsing JSON
-        # request_body = {
-        #     'uris':json.dumps(tracks)
-        # }
-
-        response = requests.post(url=endpoint, headers=self.header, params=query)
-        print(response)
-
-        json_data = response.json()
-        return json_data
+    json_data = response.json()
+    return json_data
 
 
-    # PUT request to clear playlist and add new songs
-    # Params: 
-    # - string:playlist_id
-    # - string:uri_list = comma separated list of uri's of the songs to be added
-    # Return: string:snapshot ID for the playlist
-    def updatePlaylist(self, playlist_id, uri_list):
-        endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+# POST request to Add one or more items to a user's playlist
+# Params: 
+# - string:playlist_id
+# - string:tracks = comma separated list of track uri's (TODO: change to a list type)
+# Return: string:snapshot ID for the playlist
+def addSongToPlaylist(auth_header, playlist_id, tracks):
+    endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+
+    query = {
+        'uris':tracks
+    }
+
+    ## TODO: Fix Error parsing JSON
+    # request_body = {
+    #     'uris':json.dumps(tracks)
+    # }
+
+    response = requests.post(url=endpoint, headers=auth_header, params=query)
+    print(response)
+
+    json_data = response.json()
+    return json_data
 
 
-        query = {
-            'uris': uri_list
-        }
-        
-        request_body = {
-            'uris': uri_list
-        }
+# PUT request to clear playlist and add new songs
+# Params: 
+# - string:playlist_id
+# - string:uri_list = comma separated list of uri's of the songs to be added
+# Return: string:snapshot ID for the playlist
+def updatePlaylist(auth_header, playlist_id, uri_list):
+    endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
 
-        # response = requests.put(url=endpoint, headers=self.header, params=query)
-        response = requests.put(url=endpoint, headers=self.header, data=json.dumps(request_body))
+    query = {
+        'uris': uri_list
+    }
+    
+    request_body = {
+        'uris': uri_list
+    }
 
-        json_data = response.json()
-        return json_data
+    response = requests.put(url=endpoint, headers=auth_header, data=json.dumps(request_body))
 
-    def getAvailableGenreSeeds(self):
-        endpoint = "https://api.spotify.com/v1/recommendations/available-genre-seeds"
+    json_data = response.json()
+    return json_data
 
-        response = requests.put(url=endpoint, headers=self.header)
-        print(response)
-        json_data = response.json()
-        return json_data
+
+def getAvailableGenreSeeds(auth_header):
+    endpoint = "https://api.spotify.com/v1/recommendations/available-genre-seeds"
+
+    response = requests.put(url=endpoint, headers=auth_header)
+    print(response)
+    json_data = response.json()
+    return json_data
 
 
 
