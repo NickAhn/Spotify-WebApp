@@ -4,3 +4,4 @@ db.txt
 *.json
 .venv/
 testing/
+spotify_api_test.py

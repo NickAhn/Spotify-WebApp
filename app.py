@@ -7,6 +7,8 @@ import spotify_api
 
 app = Flask(__name__)
 app.config['TESTING'] = True
+app.config.update(SECRET_KEY='osd(99092=36&462134kjKDhuIS_d23',
+                  ENV='development')
 
 # data = main.getTopSongsData(SPOTIFY_API.getUserTopItems("short_term"))
 # df = pd.DataFrame.from_dict(data['tracks'])
@@ -19,14 +21,6 @@ app.config['TESTING'] = True
 def index():
     return render_template("index.html")
 
-@app.route("/main")
-def main():
-    # return render_template("main.html", columns=df.columns.values, rows=df.values.tolist())
-    api = spotify_api.api()
-    api.refreshAccessToken()
-    return render_template("main.html", user=api.getCurrentUserProfile()['display_name'])
-
-
 # -------------------- auth -------------------------
 @app.route("/auth")
 def auth():
@@ -37,21 +31,15 @@ def auth():
 @app.route("/callback/")
 def callback():
     auth_token = request.args['code']
-    access_token, refresh_token = spotify_auth.getAccessToken(auth_token)
-    # session['token'] = access_token
-    token = access_token
-
-    f = open('secrets.json', 'r')
-    data = json.load(f)
-    data['access_token'] = access_token
-    data['refresh_token'] = refresh_token
-
-    f = open('secrets.json', 'w')
-    f.write(json.dumps(data, indent=4))
-
-    return render_template("index.html")
+    session['auth_header'] = spotify_auth.getAccessHeader(auth_token)
+    return main()
 # ----------------------------------------------------
 
+@app.route("/main")
+def main():
+    user_profile = spotify_api.getCurrentUserProfile(session['auth_header'])
+    user_profile_picture = user_profile['images'][0]['url']
+    return render_template("main.html", user=user_profile['display_name'], pfp_url=user_profile_picture)
 
 if __name__ == "__main__":
-    app.run(debug=True, port=spotify_auth.PORT)
+    app.run(debug=True)
