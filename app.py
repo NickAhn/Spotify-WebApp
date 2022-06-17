@@ -1,9 +1,10 @@
 from os import access
 import pandas as pd
-from flask import Flask, render_template, redirect, request, session
+from flask import Flask, render_template, redirect, request, session, url_for
 import spotify_auth
 import json
 import spotify_api
+import api_helper
 
 app = Flask(__name__)
 app.config['TESTING'] = True
@@ -32,13 +33,14 @@ def auth():
 def callback():
     auth_token = request.args['code']
     session['auth_header'] = spotify_auth.getAccessHeader(auth_token)
-    return main()
+    return redirect(url_for('main'))
 # ----------------------------------------------------
 
 @app.route("/main")
 def main():
     user_profile = spotify_api.getCurrentUserProfile(session['auth_header'])
     user_profile_picture = user_profile['images'][0]['url']
+    top_items = api_helper.get_top_songs_data(session['auth_header'], 'short_term')
     return render_template("main.html", user=user_profile['display_name'], pfp_url=user_profile_picture)
 
 if __name__ == "__main__":
