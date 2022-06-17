@@ -46,11 +46,12 @@ def get_top_songs_data(auth_header:dict, time_range:str) -> dict:
 
     data = {}
     for count, i in enumerate(top_items['items'], start=1):
+        # image url [2] = 64 x 64
         data[count] = {
             'name': i['name'],
             'artist': i['artists'][0]['name'],
             'album': i['album']['name'],
-            'image': i['album']['images'][0]['url'],
+            'image': i['album']['images'][2]['url'],
             'uri':i['uri']
         }
     
