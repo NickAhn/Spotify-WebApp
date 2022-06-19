@@ -1,9 +1,24 @@
-# Byte-compiled
-__pycache__/
-secret.py
-test.py
-db.txt
-*.json
+
+# Virtual Environment
 .venv/
-testing/
-spotify_api_test.py
+
+# Other
+db.txt
+
+# Secrets
+secret.py
+secrets.json
+*.json
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask stuff:
+instance/
+.webassets-cache
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
