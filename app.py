@@ -1,10 +1,10 @@
 from os import access
 import pandas as pd
 from flask import Flask, render_template, redirect, request, session, url_for
-import spotify_auth
+import spotify.spotify_auth as spotify_auth
 import json
-import spotify_api
-import api_helper
+import spotify.spotify_api as spotify_api
+import spotify.api_helper as api_helper
 
 app = Flask(__name__)
 app.config['TESTING'] = True

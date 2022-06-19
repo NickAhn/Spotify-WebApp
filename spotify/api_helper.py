@@ -1,17 +1,20 @@
-# Script using spotify_api with functionalities needed for the website
+# Script using spotify_api with more complex functionalities needed for the website
 from time import time
-import spotify_api
+import spotify.spotify_api as spotify_api
 from datetime import date
 import pandas as pd
 import json
 
-
 PLAYLIST_ID = "6npTzd1QgVwlJ52QSbEXDJ"
-# SPOTIFY_API = spotify_api.api(spotify_api.refreshAccessToken())
-    
 
-# Return: dictionary of ranking:{track name, artist, uri}
-def updateTopSongs(auth_header, playlist_id):
+'''
+Description: Clear, and update Playlist with User's Top Songs
+Params: 
+    auth_header
+    playlist_id - Found by copying Playlist's link
+Return: List containing data of the Songs added
+'''
+def updateTopSongs(auth_header:dict, playlist_id:str) -> dict:
     print("- Getting ", spotify_api.getCurrentUserProfile()['display_name'], "'s Top Items -")
     topItems = spotify_api.getUserTopItems("short_term")
     uri_list = []
@@ -24,23 +27,14 @@ def updateTopSongs(auth_header, playlist_id):
     return get_top_songs_data(topItems)
 
 
-# def getTopSongsData(topItems_json):
-#     data = {
-#         "playlist_id": PLAYLIST_ID,
-#         "date": str(date.today()),
-#         "tracks":[]
-#     }
-#     for count, i in enumerate(topItems_json['items'], start=1):
-#         data["tracks"].append({
-#             'name': i['name'],
-#             'artist': i['artists'][0]['name'],
-#             'album': i['album']['name'],
-#             'uri':i['uri']
-#         })
-
-#     return data
-
-
+''' 
+Description: Get User Top Track's relevant data 
+            (name, artist, album, image, and uri of the top tracks)
+Params:
+    auth_header - Authentication Header (saved in Flask.Session['auth_header'])
+    time_range - short_term (past 4 weeks) / medium_term (past 6 months) / long_term (past year)
+Return: List of Dictionaries with data
+'''
 def get_top_songs_data(auth_header:dict, time_range:str) -> list:
     top_items = spotify_api.getUserTopItems(auth_header=auth_header, time_range=time_range)
 
