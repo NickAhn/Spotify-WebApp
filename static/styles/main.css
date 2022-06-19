@@ -1,5 +1,5 @@
 :root {
-    --bg: #fff;
+    --bg: #EEE;
     --black: #191414;
     --darkgreen: #1db954;
     --lightgreen: #1ed760;
@@ -20,6 +20,7 @@ h1, h2, h3, p{
     margin:0;
     padding:0;
     text-align: center;
+    font-weight: 400;
 }
 
 p {
@@ -86,7 +87,7 @@ button:hover {
     align-items: center;
     justify-content: center;
 
-    border: 2px solid lightcoral;
+    /* border: 2px solid lightcoral; */
 }
 
 .flexbox-col {
@@ -98,21 +99,21 @@ button:hover {
     /* Center col items*/
     align-items: center; 
     justify-content: center;
-    width: 50%;
+    width: 70%;
 
-    border: 2px solid red;
+    /* border: 2px solid red; */
 }
 
 .flexbox-row > #rank{
     width:100px;
     text-align: center;
 
-    border: 2px solid greenyellow;
+    /* border: 2px solid greenyellow; */
 }
 
 
 .flexbox-row {
-    border: 2px solid blue;
+    /* border: 2px solid blue; */
     /* min-width: 150px; */
     margin: 10px;
 }

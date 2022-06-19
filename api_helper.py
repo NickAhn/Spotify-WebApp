@@ -41,19 +41,19 @@ def updateTopSongs(auth_header, playlist_id):
 #     return data
 
 
-def get_top_songs_data(auth_header:dict, time_range:str) -> dict:
+def get_top_songs_data(auth_header:dict, time_range:str) -> list:
     top_items = spotify_api.getUserTopItems(auth_header=auth_header, time_range=time_range)
 
-    data = {}
+    data = []
     for count, i in enumerate(top_items['items'], start=1):
         # image url [2] = 64 x 64
-        data[count] = {
+        data.append({
             'name': i['name'],
             'artist': i['artists'][0]['name'],
             'album': i['album']['name'],
             'image': i['album']['images'][2]['url'],
             'uri':i['uri']
-        }
+        })
     
     json_data = json.dumps(data, indent=4)
     # print(json_data)

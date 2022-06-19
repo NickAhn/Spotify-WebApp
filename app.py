@@ -41,7 +41,7 @@ def main():
     user_profile = spotify_api.getCurrentUserProfile(session['auth_header'])
     user_profile_picture = user_profile['images'][0]['url']
     top_items = api_helper.get_top_songs_data(session['auth_header'], 'short_term')
-    return render_template("main.html", user=user_profile['display_name'], pfp_url=user_profile_picture)
+    return render_template("main.html", user=user_profile['display_name'], pfp_url=user_profile_picture, top_songs=top_items)
 
 if __name__ == "__main__":
     app.run(debug=True)

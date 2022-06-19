@@ -5,6 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel= "stylesheet" href= "{{ url_for('static', filename='styles/main.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>    
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
     <title>Nickel's Spotify Project!</title>
 </head>
 <body>
@@ -15,34 +19,27 @@
     </div>
   </div>
 
-  <h2>Your Top Songs</h2>
+  <h1>Your Top Songs</h1>
+  <h2>Past 4 Weeks:</h2>
+
   <div class="song_table">
+    {% for song in top_songs %}
     <div class="flexbox-col">
       <div class="flexbox-row" id="rank">
-        <h3>01</h3>
+        <h2> {{ loop.index }} </h2>
       </div>
       <div class="flexbox-row">
-        <img src="https://i.scdn.co/image/ab67616d0000485153f6fa0d2589c6a7174f4b81">
+        <img src={{song.image}}>
       </div>
       <div class="flexbox-row">
-        <span>Gimme Love</span>
+        <span>{{ song.name }}</span>
         <br>
-        <span>Joji</span>
+        <span>{{ song.artist }}</span>
       </div>
     </div>
-
-    <div class="flexbox-col">
-      <div class="flexbox-row">
-        <h3>02</h3>
-      </div>
-      <div class="flexbox-row">
-        <img src="https://i.scdn.co/image/ab67616d0000485153f6fa0d2589c6a7174f4b81">
-      </div>
-      <div class="flexbox-row">
-        <span>Joji - Upgrade</span>
-      </div>
-    </div>
+    {% endfor %}
   </div>
+
 
 
 </body>
