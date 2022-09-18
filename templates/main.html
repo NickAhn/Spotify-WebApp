@@ -12,33 +12,36 @@
     <title>Nickel's Spotify Project!</title>
 </head>
 <body>
-  <h1 class="header">Hello, {{user}}!</h1>
   <div class="column">
     <div class="item">
       <img src={{pfp_url}} class="center" id="icon">
     </div>
+    <div class="item">
+      <h1 class="header">Hello, {{user}}!</h1>
+    </div>
   </div>
 
-  <h1>Your Top Songs</h1>
-  <h2>Past 4 Weeks:</h2>
+  <!-- <h1>Your Top Songs</h1>
+  <h2>Past 4 Weeks:</h2> -->
 
-  <div class="song_table">
-    {% for song in top_songs %}
-    <div class="flexbox-col">
-      <div class="flexbox-row" id="rank">
-        <h2> {{ loop.index }} </h2>
+
+  
+  <div class="music-box">
+  {% for song in top_songs %}
+    <div class="music-info">
+      <div class="music-rank"> {{ loop.index }} </div>
+      <div class="music-img">
+        <img src={{song.image}} alt="song">
       </div>
-      <div class="flexbox-row">
-        <img src={{song.image}}>
-      </div>
-      <div class="flexbox-row">
-        <span>{{ song.name }}</span>
-        <br>
-        <span>{{ song.artist }}</span>
+      <div class="music-name">
+        <div class="name">{{ song.name }}</div>
+        <div class="artist">{{ song.artist }}</div>
       </div>
     </div>
-    {% endfor %}
+  {% endfor %}
   </div>
+  
+
 
 
 

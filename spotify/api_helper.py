@@ -1,4 +1,5 @@
 # Script using spotify_api with more complex functionalities needed for the website
+# TODO: This is messy. organize all api calls in one .py file.
 from time import time
 import spotify.spotify_api as spotify_api
 from datetime import date
@@ -50,7 +51,7 @@ def get_top_songs_data(auth_header:dict, time_range:str) -> list:
         })
     
     json_data = json.dumps(data, indent=4)
-    # print(json_data)
+    print(json_data)
     with open("nickahn.json", "w") as f:
         f.write(json_data)
 
