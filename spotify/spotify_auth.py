@@ -3,7 +3,6 @@
 
 import base64
 from textwrap import indent
-import webbrowser
 import requests
 # from secret import client_id, secret, redirect_uri
 import urllib.parse
@@ -38,7 +37,7 @@ def requestUserAuthorization():
 # send a POST request to receive the Access Token to be used for the API
 # return: Header to be used for API requests
 def getAccessHeader(auth_code):
-    print("- Getting Access Token -")
+    print("\n- Getting Access Token -")
     TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
     # Create HEADER by encoding message to 64 bit

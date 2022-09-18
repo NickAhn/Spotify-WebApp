@@ -39,10 +39,11 @@ Params:
 Return: Dictionary with User's Data
 '''
 def getCurrentUserProfile(auth_header:dict) -> dict:
-    print("- Getting Current User Profile -")
+    print("\n- Getting Current User Profile -")
     endpoint = "https://api.spotify.com/v1/me"
 
     response = requests.get(url=endpoint, headers=auth_header)
+    print(response)
     return response.json()
 
 
@@ -54,8 +55,8 @@ Params:
                  Valid Values: short_term (past 4 weeks), medium_term (past 6 months, long_term (several years of data)
 Return: Dictionary with Top Items Data
 '''
-def getUserTopItems(auth_header:dict, time_range:str) -> dict:
-    endpoint = f"https://api.spotify.com/v1/me/top/tracks"
+def getUserTopItems(auth_header:dict, time_range:str, type:str = "tracks") -> dict:
+    endpoint = f"https://api.spotify.com/v1/me/top/{type}"
 
     queryParameters = {
         'time_range': time_range
