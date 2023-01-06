@@ -1,4 +1,4 @@
-# NickelBox - Discover your Spotify Top Songs
+# Discover your Spotify Top Songs
 Discover your Most Played Songs, Artists, and Genres!
 
 
