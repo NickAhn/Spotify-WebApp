@@ -5,40 +5,16 @@ Reference: https://developer.spotify.com/documentation/web-api/reference/#/
 from curses import KEY_A1
 from re import A
 import requests
-import base64
 import json
 
-# Not currently being used #
-def refreshAccessToken(self):
-    print("- Refreshing Access Token -")
-    TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
-    # Create HEADER by encoding message to 64 bit
-    message = f"{client_id}:{secret}"
-    encodedData = base64.b64encode(bytes(message, "ISO-8859-1")).decode("ascii")
-
-    data = {
-        'grant_type': 'refresh_token',
-        'refresh_token': self.refresh_token
-    }
-
-    header = {
-        'Authorization': f"Basic {encodedData}",
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
-
-    r = requests.post(url=TOKEN_URL, data=data, headers=header)
-    token = r.json()['access_token']
-    return token
-
-
-'''
-Description: Get detailed profile information about the current user (including the current user's username).
-Params:
-    auth_header - Authentication Header (saved in Flask.Session['auth_header'])
-Return: Dictionary with User's Data
-'''
 def getCurrentUserProfile(auth_header:dict) -> dict:
+    '''
+    Description: Get detailed profile information about the current user (including the current user's username).
+    Params:
+        auth_header - Authentication Header (saved in Flask.Session['auth_header'])
+    Return: Dictionary with User's Data
+    '''
     print("\n- Getting Current User Profile -")
     endpoint = "https://api.spotify.com/v1/me"
 
@@ -47,15 +23,15 @@ def getCurrentUserProfile(auth_header:dict) -> dict:
     return response.json()
 
 
-'''
-Description: Get the current user's top artists or tracks based on calculated affinity.
-Params:
-    auth_header - Authentication Header (saved in Flask.Session['auth_header'])
-    time_range - Over what time frame the affinities are computed. 
-                 Valid Values: short_term (past 4 weeks), medium_term (past 6 months, long_term (several years of data)
-Return: Dictionary with Top Items Data
-'''
 def getUserTopItems(auth_header:dict, time_range:str, type:str = "tracks") -> dict:
+    '''
+    Description: Get the current user's top artists or tracks based on calculated affinity.
+    Params:
+        auth_header - Authentication Header (saved in Flask.Session['auth_header'])
+        time_range - Over what time frame the affinities are computed. 
+                    Valid Values: short_term (past 4 weeks), medium_term (past 6 months, long_term (several years of data)
+    Return: Dictionary with Top Items Data
+    '''
     endpoint = f"https://api.spotify.com/v1/me/top/{type}"
 
     queryParameters = {
@@ -67,10 +43,16 @@ def getUserTopItems(auth_header:dict, time_range:str, type:str = "tracks") -> di
     return response.json()
 
 
-'''
-https://developer.spotify.com/documentation/web-api/reference/#/operations/create-playlist
-'''
+# https://developer.spotify.com/documentation/web-api/reference/#/operations/create-playlist
 def createPlaylist(auth_header:dict, user_id:str, playlist_name:str, is_public:bool=True, description:str=""):
+    '''
+    Description: Get the current user's top artists or tracks based on calculated affinity.
+    Params:
+        auth_header - Authentication Header (saved in Flask.Session['auth_header'])
+        time_range - Over what time frame the affinities are computed. 
+                    Valid Values: short_term (past 4 weeks), medium_term (past 6 months, long_term (several years of data)
+    Return: Dictionary with Top Items Data
+    '''
     endpoint = f"https://api.spotify.com/v1/users/{user_id}/playlists"
     
     request_body = {
@@ -86,14 +68,14 @@ def createPlaylist(auth_header:dict, user_id:str, playlist_name:str, is_public:b
     return json_data
 
 
-'''
-Decription: Add one or more items to a user's playlist.
-Params: 
-- playlist_id
-- tracks = comma separated list of track uri's (TODO: change to a list type)
-Return: string:snapshot ID for the playlist
-'''
 def addSongToPlaylist(auth_header:dict, playlist_id:str, tracks:str):
+    '''
+    Decription: Add one or more items to a user's playlist.
+    Params: 
+     - playlist_id
+     - tracks = comma separated list of track uri's (TODO: change to a list type)
+    Return: string:snapshot ID for the playlist
+    '''
     endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
 
     query = {
@@ -112,14 +94,15 @@ def addSongToPlaylist(auth_header:dict, playlist_id:str, tracks:str):
     return json_data
 
 
-'''
-Description: PUT request to clear playlist and add new songs
-Params: 
-- string:playlist_id
-- string:uri_list = comma separated list of uri's of the songs to be added
-Return: string:snapshot ID for the playlist
-'''
+
 def updatePlaylist(auth_header:dict, playlist_id:str, uri_list:str):
+    '''
+    Description: Clear playlist and add new songs
+    Params: 
+    - playlist_id : playlist to be modified
+    - uri_list = comma separated list of uri's of the songs to be added
+    Return: string with snapshot ID for the playlist
+    '''
     endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
 
     query = {

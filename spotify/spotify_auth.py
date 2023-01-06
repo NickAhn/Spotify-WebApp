@@ -17,10 +17,12 @@ client_id = data['client_id']
 secret = data['secret']
 redirect_uri = "http://127.0.0.1:5000/callback/"
 
-# Function to get User Authentication Code to be used in getAccessToken()
-# params: str:scope = space-separated list of permissions
-# return: Authorization Code
-def requestUserAuthorization():
+
+def requestUserAuthorization() -> str:
+    '''
+    Get the Authorization Code to be used in getAccessToken()
+    Return: URL string with authorization code
+    '''
     print("- Redirecting to AUTH_URL -")
     query_params = {
         'client_id': client_id,
@@ -33,10 +35,13 @@ def requestUserAuthorization():
     return AUTH_URL
     
     
-# OAuth to get access token to be used for the Spotify API
-# send a POST request to receive the Access Token to be used for the API
-# return: Header to be used for API requests
-def getAccessHeader(auth_code):
+def getAccessHeader(auth_code: str):
+    '''
+    Get Access Token to be used for OAuth
+    Params:
+     - auth_code : Authentication code to be used in POST request's payload
+    Return: Header to be used for API requests
+    '''
     print("\n- Getting Access Token -")
     TOKEN_URL = 'https://accounts.spotify.com/api/token'
 
@@ -55,7 +60,6 @@ def getAccessHeader(auth_code):
         'redirect_uri': redirect_uri
     }
 
-    # POST request
     r = requests.post(TOKEN_URL, headers=headers, data=payload)
     r_json = r.json()
     print(r_json)
@@ -64,6 +68,32 @@ def getAccessHeader(auth_code):
     auth_header = {"Authorization": "Bearer {}".format(access_token)}
     return auth_header
 
+
+# Not currently being used #
+# def refreshAccessToken():
+#     '''
+#     refresh Access Token after it expires
+#     '''
+#     print("- Refreshing Access Token -")
+#     TOKEN_URL = 'https://accounts.spotify.com/api/token'
+
+#     # Create HEADER by encoding message to 64 bit
+#     message = f"{client_id}:{secret}"
+#     encodedData = base64.b64encode(bytes(message, "ISO-8859-1")).decode("ascii")
+
+#     data = {
+#         'grant_type': 'refresh_token',
+#         'refresh_token': refresh_token
+#     }
+
+#     header = {
+#         'Authorization': f"Basic {encodedData}",
+#         'Content-Type': 'application/x-www-form-urlencoded'
+#     }
+
+#     r = requests.post(url=TOKEN_URL, data=data, headers=header)
+#     token = r.json()['access_token']
+#     return token
 
 
 

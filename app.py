@@ -10,36 +10,36 @@ app.config['TESTING'] = True
 app.config.update(SECRET_KEY='osd(99092=36&462134kjKDhuIS_d23',
                   ENV='development')
 
-
+# Welcome Page
 @app.route("/")
 def index():
     return render_template("index.html")
 
-
-# -------------------- auth -------------------------
+# Request User Authorization to use Spotify API
 @app.route("/auth")
 def auth():
     AUTH_URL = spotify_auth.requestUserAuthorization()
     print(AUTH_URL)
     return redirect(AUTH_URL)
 
+# Redirect after /auth
 @app.route("/callback/")
 def callback():
     auth_token = request.args['code']
-    print("AUTH TOKENNNN _ ", auth_token)
+    print("\nAUTH TOKEN ", auth_token)
     session['auth_header'] = spotify_auth.getAccessHeader(auth_token)
+    print("session header: ", session['auth_header'])
     return redirect(url_for('main'))
-# ----------------------------------------------------
 
-
+# Main page with song list
 @app.route("/main")
 def main():
     user_profile = spotify_api.getCurrentUserProfile(session['auth_header'])
     user_profile_picture = user_profile['images'][0]['url']
-    top_items = api_helper.get_top_songs_data(session['auth_header'], 'short_term')
+    top_items = api_helper.get_top_songs_data(session['auth_header'], 'long_term')
     return render_template("main.html", user=user_profile['display_name'], pfp_url=user_profile_picture, top_songs=top_items)
 
-
+# Page for testing features
 @app.route("/test")
 def test():
     topTracks = spotify_api.getUserTopItems(session['auth_header'], "long_term", type='artists')
