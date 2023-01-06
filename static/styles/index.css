@@ -1,0 +1,51 @@
+:root {
+    --bg: #EEE;
+    --black: #191414;
+}
+
+/* Background animations */
+body {
+    background-color: white;
+    font-family: 'Montserrat', sans-serif;
+    background: linear-gradient(45deg,#FDC094, #FF9190,  #5E72EB, #23d5ab);
+	background-size: 400% 400%;
+	animation: gradient 20s ease infinite;
+	height: 100vh;
+}
+
+@keyframes gradient {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
+}
+
+.center {
+    text-align: center;
+    padding: 25vh 0;
+}
+
+.container {
+    display: flex;
+    flex-direction: row;
+    /* align horizontally and vertically */
+    justify-content: center;
+    align-items: center;     
+}
+
+.item {
+    margin: 0 1em;
+}
+
+#header {
+    font-size: 4em;
+}
+
+#github-icon {
+    max-width: 15%;
+}
