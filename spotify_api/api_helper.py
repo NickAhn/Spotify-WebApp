@@ -1,7 +1,7 @@
 # Script using spotify_api with more complex functionalities needed for the website
 # TODO: This is messy. organize all api calls in one .py file.
 from time import time
-import spotify.spotify_api as spotify_api
+import spotify_api.api as api
 from datetime import date
 import pandas as pd
 import json
@@ -16,14 +16,14 @@ Params:
 Return: List containing data of the Songs added
 '''
 def updateTopSongs(auth_header:dict, playlist_id:str) -> dict:
-    print("- Getting ", spotify_api.getCurrentUserProfile()['display_name'], "'s Top Items -")
-    topItems = spotify_api.getUserTopItems("short_term")
+    print("- Getting ", api.getCurrentUserProfile()['display_name'], "'s Top Items -")
+    topItems = api.getUserTopItems("short_term")
     uri_list = []
     for i in topItems['items']:
         uri_list.append(i['uri'])
     
     print("- Updating Playlist -")
-    spotify_api.updatePlaylist(auth_header, playlist_id, uri_list)
+    api.updatePlaylist(auth_header, playlist_id, uri_list)
 
     return get_top_songs_data(topItems)
 
@@ -37,7 +37,7 @@ Params:
 Return: List of Dictionaries with data
 '''
 def get_top_songs_data(auth_header:dict, time_range:str) -> list:
-    top_items = spotify_api.getUserTopItems(auth_header=auth_header, time_range=time_range)
+    top_items = api.getUserTopItems(auth_header=auth_header, time_range=time_range)
 
     data = []
     for count, i in enumerate(top_items['items'], start=1):
